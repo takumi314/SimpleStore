@@ -31,7 +31,8 @@ let loadedArray = repository.loadArray(key: "key_name_for_array")
 For Dictionary's type, delare a Repository into which passed UserDefaults instance, and specify a unique key-name.
 
 ```
-let dic = ["☀️": 0, "%$": "2", "_#%|!?*+<>@": true, "DDD": 0.0, "EEE": "5"]
+let dic = ["a":"hoge", "b": 0.5, "c": true, "d": "😎", "e": 0.05] as [String : Any]
+
 repository.save(dictionary: dic, key: "key_name_for_dictionary")
 
 ```
