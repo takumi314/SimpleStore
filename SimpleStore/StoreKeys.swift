@@ -14,21 +14,21 @@ struct StoreKey: RawRepresentable {
     }
     var rawValue: String
     typealias RawValue = String
+}
+
+extension StoreKey {
 
     enum Array {
-
         // definte key which will be used in UserDefaults
         static let test1 = StoreKey(rawValue: "test1")
-        static let test2 = StoreKey(rawValue: "test2")
+
     }
 
     enum Dictionary {
         // definte key which will be used in UserDefaults
         static let test1 = StoreKey(rawValue: "test1")
-        static let test2 = StoreKey(rawValue: "test2")
+
     }
 
 }
-
-extension StoreKey { }
 
