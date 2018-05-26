@@ -59,7 +59,7 @@ extension UserDefaults: Persistable {
     func write(_ dictionary: [String: Any], key: StoreKey) {
         let data = NSKeyedArchiver.archivedData(withRootObject: dictionary)
         self.set(data, forKey: key.rawValue)
-        print("write > data_dictionary_\(key.rawValue)")
+        print("write > dictionary_\(key.rawValue)")
     }
 
 
@@ -77,9 +77,12 @@ extension UserDefaults: Persistable {
     }
 
     func read(key: StoreKey) -> [String: Any] {
-        let data = self.data(forKey: key.rawValue)
-        print("read < data_dictionary_\(key.rawValue)")
-        let dic = NSKeyedUnarchiver.unarchiveObject(with: data!) as! [String: Any]
+        guard let data = self.data(forKey: key.rawValue) else {
+            return [:]
+        }
+
+        print("read < dictionary_\(key.rawValue)")
+        let dic = NSKeyedUnarchiver.unarchiveObject(with: data) as! [String: Any]
         return dic
     }
 
