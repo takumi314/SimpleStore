@@ -16,7 +16,7 @@ protocol WritableContract {
 }
 
 protocol ReadableContract {
-    func read<T>(key: StoreKey) -> T where T : Collection
+    func read<T>(key: StoreKey) -> [T]
     func read(key: StoreKey) -> [String: Any]
 }
 
@@ -64,11 +64,11 @@ extension UserDefaults: Persistable {
 
     // MARK: - ReadableContract
 
-    func read<T>(key: StoreKey) -> Array<T> {
+    func read<T>(key: StoreKey) -> [T] {
         var index = 0
         var array = [T]()
-        while let item = self.object(forKey: "data_array_\(index)_\(key.rawValue)") as? T {
-            print("read < data_array_\(index)_\(key.rawValue)")
+        while let item = self.object(forKey: "\(key.rawValue)_collection_element\(index)") as? T {
+            print("read < \(key.rawValue)_collection_element\(index)")
             array.append(item)
             index += 1
         }
