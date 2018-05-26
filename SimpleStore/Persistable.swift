@@ -11,12 +11,12 @@ import Foundation
 typealias Persistable = WritableContract & ReadableContract
 
 protocol WritableContract {
-    func write<T>(_ array: Array<T>, key: StoreKey)
+    func write<T>(_ elements: T, key: StoreKey) where T : Collection
     func write(_ dictionary: [String: Any], key: StoreKey)
 }
 
 protocol ReadableContract {
-    func read<T>(key: StoreKey) -> Array<T>
+    func read<T>(key: StoreKey) -> T where T : Collection
     func read(key: StoreKey) -> [String: Any]
 }
 
