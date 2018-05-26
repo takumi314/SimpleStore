@@ -48,10 +48,11 @@ extension UserDefaults: Persistable {
 
     // MARK: - WritableContract
 
-    func write<T>(_ array: Array<T>, key: StoreKey) {
-        (0..<array.count).forEach { (index: Int) in
-            self.set(array[index], forKey: "data_array_\(index)_\(key.rawValue)")
-            print("write > data_array_\(index)_\(key.rawValue)")
+    func write<T>(_ elements: T, key: StoreKey) where T : Collection {
+        elements.enumerated().forEach { (index: Int, element: T.Element) in
+            let keyName = "\(key.rawValue)_collection_element\(index)"
+            self.set(element, forKey: keyName)
+            print("write > \(keyName)")
         }
     }
 
