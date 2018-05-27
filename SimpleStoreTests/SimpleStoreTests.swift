@@ -26,13 +26,6 @@ extension StoreKey {
 
         static let performance = StoreKey(rawValue: "performance")
     }
-    enum TestDictionary {
-        static let string = StoreKey(rawValue: "string")
-        static let int = StoreKey(rawValue: "int")
-        static let float = StoreKey(rawValue: "float")
-
-        static let performance = StoreKey(rawValue: "performance")
-    }
 }
 
 class SimpleStoreTests: XCTestCase {
