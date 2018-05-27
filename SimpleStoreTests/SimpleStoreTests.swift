@@ -11,6 +11,15 @@ import XCTest
 
 extension StoreKey {
     enum TestArray {
+        static let stringWithStub = StoreKey(rawValue: "test_array_string_stub")
+        static let intWithStub = StoreKey(rawValue: "test_array_int_stub")
+        static let string = StoreKey(rawValue: "string")
+        static let int = StoreKey(rawValue: "int")
+        static let float = StoreKey(rawValue: "float")
+
+        static let performance = StoreKey(rawValue: "performance")
+    }
+    enum TestDictionary {
         static let string = StoreKey(rawValue: "string")
         static let int = StoreKey(rawValue: "int")
         static let float = StoreKey(rawValue: "float")
@@ -28,6 +37,34 @@ extension StoreKey {
 
 class SimpleStoreTests: XCTestCase {
 
+    // Stub instead of UserDefaults
+    class StubUserDefaults: UserDefaults {
+
+        override class var standard: StubUserDefaults {
+            return StubUserDefaults()
+        }
+
+        var dictionary = Dictionary<String, Any>()
+
+        override func set(_ value: Any?, forKey defaultName: String) {
+            dictionary[defaultName] = value
+        }
+
+        override func object(forKey defaultName: String) -> Any? {
+            return dictionary[defaultName]
+        }
+
+        // NSUserDefaults
+
+        override func string(forKey defaultName: String) -> String? {
+            return ""
+        }
+
+        override func stringArray(forKey defaultName: String) -> [String]? {
+            return [""]
+        }
+    }
+
     override func setUp() {
         super.setUp()
     }
@@ -40,6 +77,90 @@ class SimpleStoreTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+
+    func testWriteStringStub() {
+        // Given
+        let stub = StubUserDefaults.standard
+        let repository = Repository<String>(via: stub)
+        let keyName = StoreKey.TestArray.stringWithStub
+        let inputs = ["ABC", "🌟🎃🍓", "%$&*<>|@(!;:.,"]
+
+        // When
+        repository.save(inputs, key: keyName)
+
+        // Then
+        let results = stub.dictionary
+        let r0 = results["\(keyName.rawValue)_collection_element0"]
+        let r1 = results["\(keyName.rawValue)_collection_element1"]
+        let r2 = results["\(keyName.rawValue)_collection_element2"]
+
+        XCTAssertNotNil(r0 as! String)
+        XCTAssertNotNil(r1 as! String)
+        XCTAssertNotNil(r2 as! String)
+        XCTAssertTrue(r0 as! String == "ABC")
+        XCTAssertTrue(r1 as! String == "🌟🎃🍓")
+        XCTAssertTrue(r2 as! String == "%$&*<>|@(!;:.,")
+    }
+
+    func testWriteIntStub() {
+        // Given
+        let stub = StubUserDefaults.standard
+        let repository = Repository<Int>(via: stub)
+        let keyName = StoreKey.TestArray.intWithStub
+        let inputs = [123, 0, -1234]
+
+        // When
+        repository.save(inputs, key: keyName)
+
+        // Then
+        let results = stub.dictionary
+        let r0 = results["\(keyName.rawValue)_collection_element0"]
+        let r1 = results["\(keyName.rawValue)_collection_element1"]
+        let r2 = results["\(keyName.rawValue)_collection_element2"]
+
+        XCTAssertNotNil(r0 as! Int)
+        XCTAssertNotNil(r1 as! Int)
+        XCTAssertNotNil(r2 as! Int)
+        XCTAssertTrue(r0 as! Int == 123)
+        XCTAssertTrue(r1 as! Int == 0)
+        XCTAssertTrue(r2 as! Int == -1234)
+    }
+
+    func testLoadStringStub() {
+        // Given
+        let stub = StubUserDefaults()
+        let repository = Repository<String>(via: stub)
+        let keyName = StoreKey.TestArray.stringWithStub
+        stub.dictionary = ["\(keyName.rawValue)_collection_element0": "ABC",
+                           "\(keyName.rawValue)_collection_element1": "🌟🎃🍓",
+                           "\(keyName.rawValue)_collection_element2": "%$&*<>|@(!;:.,"]
+
+        // When
+        let array = repository.loadArray(key: keyName)
+
+        // Then
+        XCTAssertTrue(array[0] == "ABC")
+        XCTAssertTrue(array[1] == "🌟🎃🍓")
+        XCTAssertTrue(array[2] == "%$&*<>|@(!;:.,")
+    }
+
+    func testLoadIntStub() {
+        // Given
+        let stub = StubUserDefaults()
+        let repository = Repository<Int>(via: stub)
+        let keyName = StoreKey.TestArray.stringWithStub
+        stub.dictionary = ["\(keyName.rawValue)_collection_element0": 123,
+                           "\(keyName.rawValue)_collection_element1": 0,
+                           "\(keyName.rawValue)_collection_element2": -1234]
+
+        // When
+        let array = repository.loadArray(key: keyName)
+
+        // Then
+        XCTAssertTrue(array[0] == 123)
+        XCTAssertTrue(array[1] == 0)
+        XCTAssertTrue(array[2] == -1234)
     }
 
     func testWriteStringArray() {
